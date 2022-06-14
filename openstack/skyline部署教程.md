@@ -71,6 +71,10 @@ sudo cp skyline.yaml /etc/skyline/
 docker run -d --name skyline_bootstrap -e KOLLA_BOOTSTRAP="" -v /etc/skyline/skyline.yaml:/etc/skyline/skyline.yaml --net=host 99cloud/skyline:latest
 # 启动skyline服务
 docker run -d --name skyline --restart=always -v /etc/skyline/skyline.yaml:/etc/skyline/skyline.yaml --net=host 99cloud/skyline:latest
+
+# 检查是否成功,显示如下则表示部署成功
+netstat -nlpt | grep 9999
+# tcp        0      0 0.0.0.0:9999            0.0.0.0:*               LISTEN      -
 ```
 
 # 6.体验
@@ -210,3 +214,24 @@ setting:
 # 参考文章
 
 [kolla---openstack(Xena)----skyline部署体验_Paniling的博客-CSDN博客_kolla](https://blog.csdn.net/qq_37692227/article/details/124712999) 
+
+# Q&A
+
+## 1.没有看到9999端口上有服务
+
+情况1：nginx没有启动
+```bash
+docker exec -it skyline bash
+# 手动启动nginx
+nginx
+```
+
+情况2：nginx的服务端口被占用
+```bash
+docker exec -it skyline bash
+# 找到端口号，修改为9999
+vim /etc/nginx/nginx.conf
+
+# 重新启动nginx
+nginx
+```
